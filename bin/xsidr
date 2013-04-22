@@ -1,0 +1,67 @@
+#!/usr/bin/env ruby
+
+require 'xsidr'
+require 'optparse'
+
+def io_puts(outputfile, content)
+  if outputfile == nil
+    puts content
+  else
+    f = open(outputfile)
+    f.write(content)
+    f.close
+  end
+end
+
+def usage 
+  puts "#{__FILE__} [option]? [xpath selector] [nokogiri statement]?"
+  exit 0
+end
+
+
+#
+# main
+#
+
+inputfile  = nil
+outputfile = nil
+
+OptionParser.new do |opt|
+  opt.on('-o OUTPUT_FILE', 'specified file') do |v|
+    outputfile = v
+  end
+
+  opt.on('-i INPUT_FILE', 'specified file') do |v|
+    inputfile = v
+  end
+
+  opt.parse!(ARGV)
+end
+
+if ARGV.size < 1
+  usage
+end
+
+content = (inputfile == nil) ? STDIN.read : IO.read(inputfile)
+xpath   = ARGV[0]
+
+xnode = Xsidr::Xnode.new(content)
+
+if ARGV.size == 1
+  str = []
+
+  xnode.xpath_each(xpath) do |node|
+    str.push(node.to_xml)
+  end
+
+  io_puts(outputfile, str.join(""))
+
+else
+
+  statement = ARGV[1]
+
+  xnode.xpath_each_eval(xpath, statement)
+  io_puts(outputfile, xnode.to_xml)
+  
+end
+
