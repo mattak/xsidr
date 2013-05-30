@@ -7,9 +7,7 @@ def io_puts(outputfile, content)
   if outputfile == nil
     puts content
   else
-    f = open(outputfile)
-    f.write(content)
-    f.close
+    open(outputfile, "w") { |f| f.write(content) }
   end
 end
 
@@ -42,7 +40,7 @@ if ARGV.size < 1
   usage
 end
 
-content = (inputfile == nil) ? STDIN.read : IO.read(inputfile)
+content = (inputfile == nil) ? STDIN.read : open(inputfile) { |f| f.read }
 xpath   = ARGV[0]
 
 xnode = Xsidr::Xnode.new(content)
