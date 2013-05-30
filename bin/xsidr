@@ -25,11 +25,16 @@ inputfile  = nil
 outputfile = nil
 
 OptionParser.new do |opt|
-  opt.on('-o OUTPUT_FILE', 'specified file') do |v|
+  opt.on('-o OUTPUT_FILE', 'output file') do |v|
     outputfile = v
   end
 
-  opt.on('-i INPUT_FILE', 'specified file') do |v|
+  opt.on('-i INPUT_FILE', 'input file') do |v|
+    inputfile = v
+  end
+
+  opt.on('--io INPUT_OUTPUT_FILE', 'set input output file') do |v|
+    outputfile = v
     inputfile = v
   end
 
